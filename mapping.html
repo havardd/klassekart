@@ -73,7 +73,7 @@
                 <th>HTML File</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="correct-elements">
             <!-- Correctly referenced elements will be populated here by JavaScript -->
         </tbody>
     </table>
@@ -85,7 +85,7 @@
                 <th>Error/Warning</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="error-elements">
             <!-- Errors will be populated here by JavaScript -->
         </tbody>
     </table>
@@ -96,9 +96,10 @@
                 <th>Function Name</th>
                 <th>File</th>
                 <th>Line Number</th>
+                <th>Comment</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="unused-functions">
             <!-- Unused functions will be populated here by JavaScript -->
         </tbody>
     </table>
@@ -112,7 +113,7 @@
                 <th>Line Number</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="hidden-elements">
             <!-- Hidden elements will be populated here by JavaScript -->
         </tbody>
     </table>
@@ -174,10 +175,10 @@
                 { id: '#toggle-visibility-button', css: 'style.css', js: 'script.js', html: 'index.html', description: 'Button to toggle visibility of grid lines.' }
             ];
 
-            const correctTableBody = document.querySelector('table tbody');
-            const errorTableBody = document.querySelector('#error-table tbody');
-            const unusedFunctionsTableBody = document.querySelector('#unused-functions-table tbody');
-            const hiddenElementsTableBody = document.querySelector('#hidden-elements-table tbody');
+            const correctTableBody = document.querySelector('#correct-elements');
+            const errorTableBody = document.querySelector('#error-elements');
+            const unusedFunctionsTableBody = document.querySelector('#unused-functions');
+            const hiddenElementsTableBody = document.querySelector('#hidden-elements');
             const ids = new Set();
             const errors = [];
             const unusedFunctions = [];
@@ -227,7 +228,7 @@
             const functionNames = scriptContent.match(/function\s+(\w+)/g).map(fn => fn.replace('function ', ''));
             functionNames.forEach(fn => {
                 if (!scriptContent.includes(`${fn}(`)) {
-                    unusedFunctions.push({ name: fn, file: 'script.js', line: scriptContent.split('\n').findIndex(line => line.includes(`function ${fn}`)) + 1 });
+                    unusedFunctions.push({ name: fn, file: 'script.js', line: scriptContent.split('\n').findIndex(line => line.includes(`function ${fn}`)) + 1, comment: 'Function is defined but not used.' });
                 }
             });
 
@@ -237,6 +238,7 @@
                     <td>${fn.name}</td>
                     <td>${fn.file}</td>
                     <td>${fn.line}</td>
+                    <td>${fn.comment}</td>
                     <div class="dropdown-info">
                         <p>Function ${fn.name} is defined but not used.</p>
                         <p><a href="${fn.file}" target="_blank">File: ${fn.file}</a></p>
