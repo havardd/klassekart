@@ -11,7 +11,7 @@ Emil
 Noah
 Thea
 Emma
-Nora
+Nora B
 Ingrid
 William A
 William H
