@@ -338,10 +338,18 @@ textarea:focus-visible, input:focus-visible, select:focus-visible {
     outline-offset: -4px;
 }
 
-input[type="number"], input[type="text"], select {
+input[type="number"], select {
     min-height: 2rem;
     width: 4rem;
+    text-align: center;
 }
+
+input[type="text"], select {
+    /* min-height: 2rem; */
+    /* width: 4rem; */
+    text-align: center;
+}
+
 textarea:focus-visible, input:focus-visible, select:focus-visible,
 #kateter-text:focus-visible,
 [contenteditable="true"]:focus-visible {
@@ -418,10 +426,11 @@ section h2 {
     min-height: 50px;
     min-width: 150px; /* Øk bredde for å passe to elever side om side */
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; /* Kommenter ut for å hindre at flere enn 2 elever plaseres ved siden av hverandreTillat innhold å pakke */
     justify-content: space-between;
     padding: var(--spacing-small);
     position: relative;
+    gap: 0.5rem;
 }
 
 .student-group {
@@ -657,6 +666,10 @@ label[for="sit-two-by-two"] {
 }
 #export-pdf {
     display: none;
+}
+
+#export-png {
+    display: block; /* Ensure the button is visible */
 }
 
 #fixed-settings {

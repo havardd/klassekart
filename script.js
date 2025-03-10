@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleAdvancedRequirementsButton = document.getElementById('toggle-advanced-requirements');
     const advancedRequirementsSection = document.getElementById('advanced-requirements');
     const resetButton = document.getElementById('reset-button');
+    const exportPngButton = document.getElementById('export-png');
     let students = [];
     try {
         students = JSON.parse(localStorage.getItem('students')) || [];
@@ -26,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let totalCols = 4; // Standard antall kolonner
     let totalRows = 4; // Standard antall rader inkludert kateter-raden
     let kateterRow = totalRows; // Plasser kateteret på nederste rad
-    const kateterColumn = 2; // Midterste kolonne for 3x3 grid
+    const kateterColumn = 2; // Velg standardplassering for kateter
 
     // Hent flere elementer fra DOM
     const settingsButton = document.getElementById('settings-button');
@@ -112,11 +113,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const dropZone = e.target.closest('.seating-cell, .student-group, .student-container');
         const draggableElement = document.getElementById(draggableElementId);
         if (dropZone && draggableElement && dropZone !== draggableElement) {
+            const dropZoneRect = dropZone.getBoundingClientRect();
+            const dropPosition = {
+                x: e.clientX - dropZoneRect.left,
+                y: e.clientY - dropZoneRect.top
+            };
+
             if (dropZone.classList.contains('student-group')) {
-                dropZone.querySelector('.student-container').appendChild(draggableElement);
+                const studentContainer = dropZone.querySelector('.student-container');
+                if (dropPosition.x > dropZoneRect.width / 2) {
+                    studentContainer.appendChild(draggableElement);
+                } else {
+                    studentContainer.insertBefore(draggableElement, studentContainer.firstChild);
+                }
             } else {
-                dropZone.appendChild(draggableElement);
+                const studentsInRow = Array.from(dropZone.children).filter(child => child.classList.contains('student'));
+                if (dropPosition.x > dropZoneRect.width / 2 && studentsInRow.length < 3) {
+                    dropZone.appendChild(draggableElement);
+                } else if (dropPosition.y > dropZoneRect.height / 2 && studentsInRow.length < 2) {
+                    dropZone.appendChild(draggableElement);
+                } else {
+                    dropZone.insertBefore(draggableElement, dropZone.firstChild);
+                }
             }
+
             draggableElement.classList.remove('dragging');
             saveCurrentGrid();
         }
@@ -200,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Juster gruppestørrelse basert på antall elever
         const baseHeight = 300; // Grunnhøyde for gruppen
-        const studentHeight = 50; // Høyde for hver elev
+        const studentHeight = 10; // Høyde for hver elev
         group.style.height = `${baseHeight + students.length * studentHeight}px`;
 
         return group;
@@ -549,6 +569,61 @@ document.addEventListener('DOMContentLoaded', () => {
 
         pdf.save(filename);
     });
+
+    // Function to export seating chart as PNG
+    function exportSeatingChartAsPng() {
+        const seatingChart = document.getElementById('seating-chart');
+        const titleText = editableTitle.innerText.replaceAll(' ', '_');
+        const roomNumberText = editableRoomNumber.innerText.replaceAll(' ', '_');
+        const filename = `Klassekart ${titleText}-${roomNumberText}.png`;
+
+        // Create a temporary container to hold the title and room number
+        const tempContainer = document.createElement('div');
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.top = '0';
+        tempContainer.style.left = '0';
+        tempContainer.style.width = '100%';
+        tempContainer.style.backgroundColor = 'white';
+        tempContainer.style.padding = '10px';
+        tempContainer.style.textAlign = 'left'; // Align text to the left
+        tempContainer.style.zIndex = '-1'; // Ensure it is behind other elements
+
+        const titleElement = document.createElement('h2');
+        titleElement.innerText = editableTitle.innerText;
+        tempContainer.appendChild(titleElement);
+
+        const roomNumberElement = document.createElement('h3');
+        roomNumberElement.innerText = editableRoomNumber.innerText;
+        tempContainer.appendChild(roomNumberElement);
+
+        document.body.appendChild(tempContainer);
+
+        html2canvas(seatingChart).then(canvas => {
+            const context = canvas.getContext('2d');
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height + tempContainer.offsetHeight;
+            const tempContext = tempCanvas.getContext('2d');
+
+            tempContext.fillStyle = 'white';
+            tempContext.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            tempContext.drawImage(canvas, 0, tempContainer.offsetHeight);
+
+            html2canvas(tempContainer).then(tempCanvas2 => {
+                tempContext.drawImage(tempCanvas2, 0, 0);
+
+                const link = document.createElement('a');
+                link.href = tempCanvas.toDataURL('image/png');
+                link.download = filename;
+                link.click();
+
+                document.body.removeChild(tempContainer);
+            });
+        });
+    }
+
+    // Add event listener for export PNG button
+    exportPngButton.addEventListener('click', exportSeatingChartAsPng);
 
     // Legg til event listener for å veksle avanserte krav
     toggleAdvancedRequirementsButton.addEventListener('click', () => {
