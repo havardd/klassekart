@@ -444,8 +444,9 @@ section h2 {
     border-radius: 0.4rem;
     background-color: #f8f8f8;
     align-items: center;
-    width: 300px; /* Øk bredde */
-    height: 300px; /* Øk høyde */
+    width: 100%; /* Endre bredde til 100% for bedre tilpasning */
+    max-width: 300px; /* Legg til maks bredde */
+    height: auto; /* Endre høyde til auto */
     cursor: pointer;
     justify-content: center; /* Sentrer innhold vertikalt */
 }
@@ -592,6 +593,54 @@ h3#editable-room-number {
         left: 10px;
         z-index: 1000;
     }
+
+    /* Juster knappene under "Lag klassekart manuelt" */
+    #fixed-settings {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .button-group {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    /* Juster tekststørrelse og padding for mindre skjermer */
+    textarea, select, input {
+        font-size: var(--font-size-small);
+    }
+
+    .student {
+        font-size: var(--font-size-small);
+        padding: var(--spacing-extra-small);
+    }
+
+    #seating-chart {
+        grid-template-columns: repeat(3, 1fr); /* Juster kolonner for mindre skjermer */
+    }
+
+    .seating-cell {
+        min-height: 40px;
+        min-width: 50px;
+    }
+
+    .student-group {
+        max-width: 100%; /* Juster maks bredde for mindre skjermer */
+    }
+
+    .student {
+        flex: 1 1 100%; /* Juster for å passe én elev per rad */
+        height: auto; /* Endre høyde til auto */
+    }
+
+    #seating-chart {
+        grid-template-columns: repeat(2, 1fr); /* Juster kolonner for mindre skjermer */
+    }
+
+    .seating-cell {
+        min-height: 40px;
+        min-width: 50px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -616,6 +665,47 @@ h3#editable-room-number {
     .seating-cell {
         min-height: 40px;
         min-width: 50px;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    button, a.button {
+        font-size: var(--font-size-small);
+        padding: var(--spacing);
+    }
+
+    .student {
+        font-size: var(--font-size-extra-small);
+        padding: var(--spacing-extra-small);
+    }
+
+    #seating-chart {
+        grid-template-columns: repeat(2, 1fr); /* Juster kolonner for mindre skjermer */
+    }
+
+    .seating-cell {
+        min-height: 30px;
+        min-width: 40px;
+    }
+
+    .student-group {
+        max-width: 100%; /* Juster maks bredde for mindre skjermer */
+    }
+
+    .student {
+        flex: 1 1 100%; /* Juster for å passe én elev per rad */
+        height: auto; /* Endre høyde til auto */
+    }
+
+    #seating-chart {
+        grid-template-columns: repeat(1, 1fr); /* Juster kolonner for mindre skjermer */
+    }
+
+    .seating-cell {
+        min-height: 30px;
+        min-width: 40px;
     }
 }
 

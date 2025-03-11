@@ -575,7 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const seatingChart = document.getElementById('seating-chart');
         const titleText = editableTitle.innerText.replaceAll(' ', '_');
         const roomNumberText = editableRoomNumber.innerText.replaceAll(' ', '_');
-        const filename = `Klassekart ${titleText}-${roomNumberText}.png`;
+        const filename = `Klassekart_${titleText}-${roomNumberText}.png`;
 
         // Create a temporary container to hold the title and room number
         const tempContainer = document.createElement('div');
@@ -598,7 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.body.appendChild(tempContainer);
 
-        html2canvas(seatingChart).then(canvas => {
+        html2canvas(seatingChart, { scale: 8, useCORS: true, logging: true, width: seatingChart.scrollWidth, height: seatingChart.scrollHeight }).then(canvas => {
             const context = canvas.getContext('2d');
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = canvas.width;
@@ -609,7 +609,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tempContext.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
             tempContext.drawImage(canvas, 0, tempContainer.offsetHeight);
 
-            html2canvas(tempContainer).then(tempCanvas2 => {
+            html2canvas(tempContainer, { scale: 1, useCORS: true }).then(tempCanvas2 => {
                 tempContext.drawImage(tempCanvas2, 0, 0);
 
                 const link = document.createElement('a');
