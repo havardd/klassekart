@@ -523,6 +523,7 @@ h3#editable-room-number {
 
 .dragging {
     opacity: 0.5;
+    background-color: transparent; /* Fjern grå bakgrunn */
 }
 
 /* Muliggjør redigering av gruppe- og elevnavn med doble klikk */

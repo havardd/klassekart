@@ -142,6 +142,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Funksjon for å håndtere drag end
+    function handleDragEnd(e) {
+        e.target.classList.remove('dragging');
+    }
+
     // Funksjon for å håndtere dobbeltklikk på gruppe
     function handleGroupDoubleClick(e) {
         const groupHeader = e.target;
@@ -208,6 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
         group.addEventListener('dragstart', handleDragStart);
         group.addEventListener('dragover', handleDragOver);
         group.addEventListener('drop', handleDrop);
+        group.addEventListener('dragend', handleDragEnd); // Legg til dragend event listener
 
         const studentContainer = document.createElement('div');
         studentContainer.className = 'student-container';
@@ -236,6 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
         studentDiv.addEventListener('dragstart', handleDragStart);
         studentDiv.addEventListener('dragover', handleDragOver);
         studentDiv.addEventListener('drop', handleDrop);
+        studentDiv.addEventListener('dragend', handleDragEnd); // Legg til dragend event listener
         studentDiv.addEventListener('dblclick', handleStudentDoubleClick);
 
         const deleteButton = document.createElement('button');
@@ -403,6 +410,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     kateterCell.addEventListener('dragstart', handleDragStart);
                     kateterCell.addEventListener('dragover', handleDragOver);
                     kateterCell.addEventListener('drop', handleDrop);
+                    kateterCell.addEventListener('dragend', handleDragEnd); // Legg til dragend event listener
                 } else {
                     const cell = document.createElement('div');
                     cell.className = 'seating-cell';
@@ -917,4 +925,9 @@ document.addEventListener('DOMContentLoaded', () => {
             errorTableBody.appendChild(row);
         }
     };
+
+    // Legg til event listener for drag end
+    document.querySelectorAll('.student, .student-group, #kateter-cell').forEach(element => {
+        element.addEventListener('dragend', handleDragEnd);
+    });
 });
